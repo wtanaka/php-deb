@@ -4,3 +4,4 @@ before_install:
 - sudo apt-get install -qq pbuilder
 script:
 - sudo pbuilder create
+- sudo pbuilder create --distribution trusty
