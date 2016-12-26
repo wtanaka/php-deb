@@ -3,5 +3,5 @@ before_install:
 - sudo apt-get update -qq
 - sudo apt-get install -qq pbuilder
 script:
-- sudo pbuilder create
-- sudo pbuilder create --distribution trusty
+#- sudo pbuilder create
+- sudo pbuilder create --distribution trusty --debootstrapopts --variant=buildd
