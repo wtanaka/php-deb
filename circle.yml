@@ -8,4 +8,6 @@ test:
 #      sudo pbuilder create --distribution trusty
 #      --buildplace .
 #      --debootstrapopts --variant=buildd
+#    - "make"
+# CircleCI does not support necessary permissions to mknod etc
     - "/bin/true"
