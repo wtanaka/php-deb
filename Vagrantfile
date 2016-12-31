@@ -44,9 +44,7 @@ Vagrant.configure("2") do |config|
 
   # Outputs "stdin: is not a tty"
   # https://github.com/mitchellh/vagrant/issues/1673#issuecomment-26650102
-  config.vm.provision "shell", inline: <<-SHELL
-    apt-get update -qq
-    apt-get install -qq pbuilder
+  config.vm.provision "shell", privileged: false, inline: <<-SHELL
     cd /vagrant
     make
   SHELL
