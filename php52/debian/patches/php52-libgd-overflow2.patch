@@ -1,0 +1,23 @@
+Index: php52-5.2.17~precise~ppa19/ext/gd/gdcache.c
+===================================================================
+--- php52-5.2.17~precise~ppa19.orig/ext/gd/gdcache.c	2015-09-27 01:45:02.243764464 +0000
++++ php52-5.2.17~precise~ppa19/ext/gd/gdcache.c	2015-09-27 02:12:11.912903086 +0000
+@@ -53,6 +53,18 @@
+ /*********************************************************/
+ 
+ 
++/* overflow2 is not exported by libgd */
++int overflow2(int a, int b)
++{
++	if(a <= 0 || b <= 0) {
++		return 1;
++	}
++	if(a > INT_MAX / b) {
++		return 1;
++	}
++	return 0;
++}
++
+ /* create a new cache */
+ gdCache_head_t *
+ gdCacheCreate(

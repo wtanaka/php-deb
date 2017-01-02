@@ -1,3 +1,9 @@
+php52 (5.2.17~ppa3~trusty) trusty; urgency=medium
+
+  * Patches for building on Trusty
+
+ -- wtanaka.com <wtanaka@yahoo.com>  Sun, 11 Oct 2015 01:02:41 +0000
+
 php52 (5.2.17~precise~ppa19) precise; urgency=low
 
   * Updated provides to specifiy which modules are already bundled

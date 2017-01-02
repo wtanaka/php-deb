@@ -1,0 +1,57 @@
+Index: php52-5.2.17~precise~ppa19/ext/dom/documenttype.c
+===================================================================
+--- php52-5.2.17~precise~ppa19.orig/ext/dom/documenttype.c	2010-01-03 09:23:27.000000000 +0000
++++ php52-5.2.17~precise~ppa19/ext/dom/documenttype.c	2015-09-22 07:06:53.404169717 +0000
+@@ -215,7 +215,13 @@
+ 		if (buff != NULL) {
+ 			xmlNodeDumpOutput (buff, NULL, (xmlNodePtr) intsubset, 0, 0, NULL);
+ 			xmlOutputBufferFlush(buff);
++
++#ifdef LIBXML2_NEW_BUFFER
++			ZVAL_STRINGL(*retval, xmlOutputBufferGetContent(buff),
++			             xmlOutputBufferGetSize(buff), 1);
++#else
+ 			ZVAL_STRINGL(*retval, buff->buffer->content, buff->buffer->use, 1);
++#endif
+ 			(void)xmlOutputBufferClose(buff);
+ 			return SUCCESS;
+ 		}
+Index: php52-5.2.17~precise~ppa19/ext/dom/node.c
+===================================================================
+--- php52-5.2.17~precise~ppa19.orig/ext/dom/node.c	2010-05-01 18:30:38.000000000 +0000
++++ php52-5.2.17~precise~ppa19/ext/dom/node.c	2015-09-22 07:06:53.400169717 +0000
+@@ -1950,9 +1950,17 @@
+         RETVAL_FALSE;
+     } else {
+ 		if (mode == 0) {
++#ifdef LIBXML2_NEW_BUFFER
++            ret = xmlOutputBufferGetSize(buf);
++#else
+ 			ret = buf->buffer->use;
++#endif
+ 			if (ret > 0) {
++#ifdef LIBXML2_NEW_BUFFER
++                RETVAL_STRINGL((char *) xmlOutputBufferGetContent(buf), ret, 1);
++#else
+ 				RETVAL_STRINGL((char *) buf->buffer->content, ret, 1);
++#endif
+ 			} else {
+ 				RETVAL_EMPTY_STRING();
+ 			}
+Index: php52-5.2.17~precise~ppa19/ext/simplexml/simplexml.c
+===================================================================
+--- php52-5.2.17~precise~ppa19.orig/ext/simplexml/simplexml.c	2010-05-05 11:40:11.000000000 +0000
++++ php52-5.2.17~precise~ppa19/ext/simplexml/simplexml.c	2015-09-22 07:06:53.404169717 +0000
+@@ -1343,7 +1343,12 @@
+ 
+ 			xmlNodeDumpOutput(outbuf, (xmlDocPtr) sxe->document->ptr, node, 0, 0, ((xmlDocPtr) sxe->document->ptr)->encoding);
+ 			xmlOutputBufferFlush(outbuf);
++#ifdef LIBXML2_NEW_BUFFER
++			RETVAL_STRINGL((char *)xmlOutputBufferGetContent(outbuf),
++			               xmlOutputBufferGetSize(outbuf), 1);
++#else
+ 			RETVAL_STRINGL((char *)outbuf->buffer->content, outbuf->buffer->use, 1);
++#endif
+ 			xmlOutputBufferClose(outbuf);
+ 		}
+ 	} else {

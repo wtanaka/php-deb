@@ -49,7 +49,7 @@ Description: Debug symbols for PHP5
 Package: libapache2-mod-php52
 Architecture: i386 amd64
 Depends: ${shlibs:Depends}, ${misc:Depends}, php52, apache2-mpm-prefork, 
- apache2.2-common 
+ apache2-data 
 Conflicts: libapache2-mod-php53, libapache2-mod-php54
 Replaces: libapache2-mod-php5
 Provides: libapache2-mod-php5

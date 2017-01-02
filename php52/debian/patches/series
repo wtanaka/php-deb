@@ -11,3 +11,9 @@
 110_newer_gmp_bug50990.patch
 120_disable_SSLv2_bug54736.patch
 130_newer_db.patch
+php52-unixd_config-rename.patch
+php52-libgd-gdgetc.patch
+php52-libgd-overflow2.patch
+php52-xmlsignedness.patch
+php52-gmp.patch
+php52-freetype.patch
