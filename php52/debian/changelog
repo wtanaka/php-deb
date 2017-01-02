@@ -1,0 +1,175 @@
+php52 (5.2.17~precise~ppa19) precise; urgency=low
+
+  * Updated provides to specifiy which modules are already bundled
+
+ -- Sascha Kettler <kettler@gmx.net>  Fri, 01 Mar 2013 14:46:44 +0100
+
+php52 (5.2.17~precise~ppa18) precise; urgency=low
+
+  * Rebuild packages for 12.04 after launchpad failures are resolved
+
+ -- Sascha Kettler <kettler@gmx.net>  Mon, 14 Jan 2013 23:26:47 +0100
+
+php52 (5.2.17~precise~ppa17) precise; urgency=low
+
+  * Updated build metadata 
+
+ -- Sascha Kettler <kettler@gmx.net>  Thu, 10 Jan 2013 01:32:01 +0100
+
+php52 (5.2.17~precise~ppa16) precise; urgency=low
+
+  * Fixed Launchpad upload
+
+ -- Sascha Kettler <kettler@gmx.net>  Wed, 09 Jan 2013 12:16:26 +0100
+
+php52 (5.2.17~precise~ppa15) precise; urgency=low
+
+  * Fixed multiarch build
+
+ -- Sascha Kettler <kettler@gmx.net>  Wed, 09 Jan 2013 11:19:27 +0100
+
+php52 (5.2.17~precise~ppa14) precise; urgency=low
+
+  * Added support for Ubuntu 12.04 (lucid)
+
+ -- Sascha Kettler <kettler@gmx.net>  Tue, 08 Jan 2013 14:54:24 +0100
+
+php52 (5.2.17~precise~ppa13) precise; urgency=low
+
+  * Dropped LPIA support for Hardy builds
+
+ -- Sascha Kettler <kettler@gmx.net>  Mon, 24 Sep 2012 10:19:25 +0200
+
+php52 (5.2.17~precise~ppa12) precise; urgency=low
+
+  * Switch back from ZEND_VM_KIND_GOTO to ZEND_VM_KIND_CALL
+
+ -- Sascha Kettler <kettler@gmx.net>  Wed, 14 Mar 2012 14:17:44 +0100
+
+php52 (5.2.17~precise~ppa11) precise; urgency=low
+
+  * Fixed php52-fpm init script 
+
+ -- Sascha Kettler <kettler@gmx.net>  Fri, 03 Feb 2012 10:19:29 +0100
+
+php52 (5.2.17~precise~ppa10) precise; urgency=low
+
+  * Moved cron job to php52-common 
+  * Added php52-dbg package
+
+ -- Sascha Kettler <kettler@gmx.net>  Wed, 12 Oct 2011 10:27:59 +0200
+
+php52 (5.2.17~precise~ppa9) precise; urgency=low
+
+  * Fixed compatibility with phpmyadmin package
+
+ -- Sascha Kettler <kettler@gmx.net>  Thu, 30 Jun 2011 16:56:27 +0200
+
+php52 (5.2.17~precise~ppa8) precise; urgency=low
+
+  * Updated Replaces/Conflicts/Provides information
+
+ -- Sascha Kettler <kettler@gmx.net>  Thu, 30 Jun 2011 15:18:59 +0200
+
+php52 (5.2.17~precise~ppa7) precise; urgency=low
+
+  * Updated package details
+
+ -- Sascha Kettler <kettler@gmx.net>  Wed, 29 Jun 2011 16:42:37 +0200
+
+php52 (5.2.17~precise~ppa6) precise; urgency=low
+
+  * Updated package dependancies
+
+ -- Sascha Kettler <kettler@gmx.net>  Wed, 29 Jun 2011 11:06:04 +0200
+
+php52 (5.2.17~precise~ppa5) precise; urgency=low
+
+  * Remove alternatives when removing package
+
+ -- Sascha Kettler <kettler@gmx.net>  Thu, 07 Apr 2011 12:41:55 +0200
+
+php52 (5.2.17~precise~ppa4) precise; urgency=low
+
+  * Enabled UTF8 mode for SQLite 
+
+ -- Sascha Kettler <kettler@gmx.net>  Wed, 30 Mar 2011 11:50:13 +0200
+
+php52 (5.2.17~precise~ppa3) precise; urgency=low
+
+  * Fixed broken alternatives
+
+ -- Sascha Kettler <kettler@gmx.net>  Wed, 30 Mar 2011 10:48:40 +0200
+
+php52 (5.2.17~precise~ppa2) precise; urgency=low
+
+  * Added missing php-config5 and phpize5 alternatives 
+
+ -- Sascha Kettler <kettler@gmx.net>  Tue, 29 Mar 2011 18:23:55 +0200
+
+php52 (5.2.17~precise~ppa1) precise; urgency=low
+
+  * Updated PHP to 5.2.17
+
+ -- Sascha Kettler <kettler@gmx.net>  Thu, 06 Jan 2011 16:36:04 +0100
+
+php52 (5.2.16~precise~ppa3) precise; urgency=low
+
+  * Fixed PHP Bug #53632 (PHP hangs on numeric value 2.2250738585072011e-308)
+
+ -- Sascha Kettler <kettler@gmx.net>  Thu, 06 Jan 2011 14:49:53 +0100
+
+php52 (5.2.16~precise~ppa2) precise; urgency=low
+
+  * Updated Suhosin and mail_log patches
+
+ -- Sascha Kettler <kettler@gmx.net>  Thu, 06 Jan 2011 13:49:02 +0100
+
+php52 (5.2.16~precise~ppa1) precise; urgency=low
+
+  * Updated PHP to 5.2.16
+
+ -- Sascha Kettler <kettler@gmx.net>  Fri, 17 Dec 2010 15:33:31 +0100
+
+php52 (5.2.14~precise~ppa10) precise; urgency=low
+
+  * Use system GD library
+  * Added dependancy on php52-common
+
+ -- Sascha Kettler <kettler@gmx.net>  Fri, 17 Dec 2010 13:57:30 +0100
+
+php52 (5.2.14~precise~ppa9) precise; urgency=low
+
+  * Moved custom configuration to php52-common
+
+ -- Sascha Kettler <kettler@gmx.net>  Mon, 29 Nov 2010 13:57:13 +0100
+
+php52 (5.2.14~precise~ppa8) precise; urgency=low
+
+  * Added php-fpm to php52 
+
+ -- Sascha Kettler <kettler@gmx.net>  Wed, 17 Nov 2010 14:38:55 +0100
+
+php52 (5.2.14~precise~ppa7) precise; urgency=low
+
+  * Updated debian/control to allow installation of php52 and php53 
+
+ -- root <root@ubuntu.aoemedia.lan>  Tue, 09 Nov 2010 16:16:15 +0100
+
+php52 (5.2.14~precise~ppa6) precise; urgency=low
+
+  * Added PHP mail_log and originating script patch
+
+ -- Sascha Kettler <kettler@gmx.net>  Wed, 03 Nov 2010 17:40:48 +0100
+
+php52 (5.2.14~precise~ppa5) precise; urgency=low
+
+  * Reenabled lpia build due to build errors 
+
+ -- Sascha Kettler <kettler@gmx.net>  Wed, 03 Nov 2010 16:10:03 +0100
+
+php52 (5.2.14~precise~ppa4) precise; urgency=low
+
+  * Initial release after version numbering change
+
+ -- Sascha Kettler <kettler@gmx.net>  Wed, 03 Nov 2010 14:27:33 +0100

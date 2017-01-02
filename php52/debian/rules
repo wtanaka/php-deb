@@ -1,0 +1,343 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+# This file was originally written by Joey Hess and Craig Small.
+# As a special exception, when this file is copied by dh-make into a
+# dh-make output file, you may use that output file without restriction.
+# This special exception was added by Craig Small in version 0.37 of dh-make.
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+# This has to be exported to make some magic below work.
+export DH_OPTIONS
+
+DEB_HOST_GNU_TYPE	?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_BUILD_GNU_TYPE	?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+DEB_BUILD_ARCH		?= $(shell dpkg-architecture -qDEB_BUILD_ARCH)
+DEB_HOST_MULTIARCH      ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH 2>/dev/null || echo '')
+
+PHP5_HOST_GNU_TYPE	= $(subst gnulp,gnu,$(DEB_HOST_GNU_TYPE))
+PHP5_BUILD_GNU_TYPE	= $(subst gnulp,gnu,$(DEB_BUILD_GNU_TYPE))
+
+PHP5_HOST_GNU_TYPE	:= $(shell echo $(PHP5_HOST_GNU_TYPE) | sed 's/-gnu$$//')
+PHP5_BUILD_GNU_TYPE	:= $(shell echo $(PHP5_BUILD_GNU_TYPE) | sed 's/-gnu$$//')
+
+# enable the hardening wrapper
+DEB_BUILD_HARDENING = 1
+# but disable PIE
+DEB_BUILD_HARDENING_PIE = 0
+export DEB_HOST_MULTIARCH DEB_BUILD_HARDENING DEB_BUILD_HARDENING_PIE
+
+# Set PHP extension dir
+ZEND_MODULE_API_NO	= $(shell grep '\#define ZEND_MODULE_API_NO ' Zend/zend_modules.h | sed 's/\#define ZEND_MODULE_API_NO //')
+EXTENSION_DIR		= /usr/lib/php52/$(ZEND_MODULE_API_NO)
+
+PROG_SENDMAIL	= /usr/sbin/sendmail
+
+CFLAGS = -O2 -Wall -fsigned-char -fno-strict-aliasing
+# LFS support
+ifneq (yes,$(PHP5_COMPAT))
+  CFLAGS += $(shell getconf LFS_CFLAGS)
+endif
+
+ifneq (nostrip, $(findstring nostrip, $(DEB_BUILD_OPTIONS)))
+        install_strip = -s
+endif
+
+# Old magic.mime location:
+ifeq ($(wildcard /usr/share/misc/file/magic.mime), /usr/share/misc/file/magic.mime)
+MAGIC_MIME = /usr/share/misc/file/magic.mime
+endif
+# New magic.mime location:
+ifeq ($(wildcard /usr/share/file/magic.mime), /usr/share/file/magic.mime)
+MAGIC_MIME = /usr/share/file/magic.mime
+endif
+
+COMMON_CONFIG=--build=$(DEB_BUILD_GNU_TYPE) \
+		--host=$(DEB_HOST_GNU_TYPE) \
+		--program-suffix=52 \
+		--prefix=/usr \
+		--localstatedir=/var \
+		--mandir=/usr/share/man \
+		--disable-debug \
+		--with-regex=php \
+		--disable-rpath \
+		--disable-static \
+		--with-pic \
+		--with-layout=GNU \
+		--with-pear=/usr/share/php \
+		--enable-calendar \
+		--enable-sysvsem \
+		--enable-sysvshm \
+		--enable-sysvmsg \
+		--enable-bcmath \
+		--with-bz2 \
+		--enable-ctype \
+		--with-db4 \
+		--without-gdbm \
+		--with-iconv \
+		--enable-exif \
+		--enable-ftp \
+		--with-gettext \
+		--enable-mbstring \
+		--with-pcre-regex \
+		--enable-shmop \
+		--enable-sockets \
+		--enable-wddx \
+		--with-libxml-dir=/usr \
+		--with-zlib \
+		--with-openssl \
+		--enable-soap \
+		--enable-zip \
+		--with-mime-magic=$(MAGIC_MIME) \
+		--with-exec-dir=/usr/lib/php52/libexec \
+		--enable-libxml \
+		--with-curl \
+		--with-curlwrappers \
+		--enable-dba \
+		--enable-dbase \
+		--with-gd=/usr \
+		--with-jpeg-dir \
+		--with-png-dir \
+		--with-xpm-dir \
+		--with-ttf \
+		--with-gmp \
+		--with-freetype-dir \
+		--enable-gd-native-ttf \
+		--with-t1lib \
+		--with-mcrypt \
+		--with-mhash \
+		--enable-sqlite-utf8 \
+		--with-mysql \
+		--with-mysqli \
+		--with-mysql-sock=/var/run/mysqld/mysqld.sock \
+		--with-pdo-mysql \
+		--with-readline \
+		--with-recode \
+		--enable-pcntl \
+		--with-xmlrpc \
+		--with-xsl \
+		--enable-zip \
+		--with-ldap \
+		--with-pspell \
+		--with-tidy
+
+# include the patch/unpatch rules from quilt
+include /usr/share/quilt/quilt.make
+
+prepared: prepared-stamp
+
+prepared-stamp: $(QUILT_STAMPFN)
+	dh_testdir
+	tar xfz debian/php-fpm-bundled-libevent.tar.gz
+	rm -f configure
+	./buildconf --force
+	touch prepared-stamp
+
+unprepared:
+	dh_testdir
+	rm -rf libevent
+	rm -f configure
+	rm -f prepared-stamp
+
+configure: configure-apache2-stamp configure-cgi-stamp configure-cli-stamp configure-fpm-stamp
+
+configure-apache2-stamp: prepared-stamp
+	dh_testdir
+	if [ -d apache2-build ]; then rm -rf apache2-build; fi
+	-mkdir apache2-build
+	cd apache2-build && \
+	CFLAGS="$(CFLAGS)" PROG_SENDMAIL="$(PROG_SENDMAIL)" ../configure \
+		--sysconfdir=/etc \
+		--with-apxs2=/usr/bin/apxs2 \
+		--with-config-file-path=/etc/php52/apache2 \
+		--with-config-file-scan-dir=/etc/php52/apache2/conf.d \
+		$(COMMON_CONFIG)
+	touch configure-apache2-stamp
+
+configure-cgi-stamp: prepared-stamp
+	dh_testdir
+	if [ -d cgi-build ]; then rm -rf cgi-build; fi
+	-mkdir cgi-build
+	cd cgi-build && \
+	CFLAGS="$(CFLAGS)" PROG_SENDMAIL="$(PROG_SENDMAIL)" ../configure \
+		--sysconfdir=/etc \
+		--enable-force-cgi-redirect --enable-fastcgi \
+		--with-config-file-path=/etc/php52/cgi \
+		--with-config-file-scan-dir=/etc/php52/cgi/conf.d \
+		$(COMMON_CONFIG)
+	touch configure-cgi-stamp
+
+configure-cli-stamp: prepared-stamp
+	dh_testdir
+	if [ -d cli-build ]; then rm -rf cli-build; fi
+	-mkdir cli-build
+	cd cli-build && \
+	CFLAGS="$(CFLAGS)" PROG_SENDMAIL="$(PROG_SENDMAIL)" ../configure \
+		--sysconfdir=/etc \
+		--disable-cgi \
+		--with-config-file-path=/etc/php52/cli \
+		--with-config-file-scan-dir=/etc/php52/cli/conf.d \
+		$(COMMON_CONFIG)
+	touch configure-cli-stamp
+
+configure-fpm-stamp: prepared-stamp
+	dh_testdir
+	if [ -d fpm-build ]; then rm -rf fpm-build; fi
+	-mkdir fpm-build
+	cd fpm-build && \
+	CFLAGS="$(CFLAGS)" LDFLAGS="-lrt" PROG_SENDMAIL="$(PROG_SENDMAIL)" ../configure \
+		--sysconfdir=/etc/php52 \
+		--enable-fastcgi --enable-fpm \
+		--with-fpm-conf=/etc/php52/php-fpm.conf \
+		--with-fpm-log=/var/log/php52/php-fpm.log \
+		--with-fpm-pid=/var/run/php-fpm52.pid \
+		--with-config-file-path=/etc/php52/fpm \
+		--with-config-file-scan-dir=/etc/php52/fpm/conf.d \
+		$(COMMON_CONFIG)
+	touch configure-fpm-stamp
+
+build-arch: build
+build-indep: build
+build: build-apache2-stamp build-cli-stamp build-cgi-stamp build-fpm-stamp build-pear-stamp
+
+build-apache2-stamp: configure-apache2-stamp
+	dh_testdir
+	cd apache2-build && $(MAKE)
+	touch build-apache2-stamp
+
+build-cgi-stamp: configure-cgi-stamp
+	dh_testdir
+	cd cgi-build && $(MAKE)
+	touch build-cgi-stamp
+
+build-cli-stamp: configure-cli-stamp
+	dh_testdir
+	cd cli-build && $(MAKE)
+	touch build-cli-stamp
+
+build-fpm-stamp: configure-fpm-stamp
+	dh_testdir
+	cd fpm-build && $(MAKE)
+	touch build-fpm-stamp
+
+build-pear-stamp: build-cli-stamp
+	dh_testdir
+	-mkdir pear-build
+	cd cli-build && make install-pear PHP_PEAR_PHP_BIN=/usr/bin/php PHP_PEAR_INSTALL_DIR=/usr/share/php PHP_PEAR_SYSCONF_DIR=/etc/pear PHP_PEAR_SIG_BIN=/usr/bin/gpg INSTALL_ROOT=$(CURDIR)/pear-build
+	sed -i -e 's/-d output_buffering=1 -d open_basedir="" -d safe_mode=0/-d output_buffering=1 -d open_basedir="" -d safe_mode=0 -d memory_limit="-1"/' \
+		$(CURDIR)/pear-build/usr/bin/pear && \
+	sed -i -e 's/-d output_buffering=1 -d safe_mode=0/-d output_buffering=1 -d open_basedir="" -d safe_mode=0 -d memory_limit="-1"/' \
+		$(CURDIR)/pear-build/usr/bin/pecl && \
+	sed -i -e 's/-d memory_limit="-1"//' \
+		-e 's/-d output_buffering=1 -d open_basedir="" -d safe_mode=0/-d output_buffering=1 -d open_basedir="" -d safe_mode=0 -d memory_limit="-1"/' \
+		$(CURDIR)/pear-build/usr/bin/peardev
+	touch build-pear-stamp
+
+install: DH_OPTIONS=
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+	mkdir -p debian/php52/var/lib/php52
+	chmod 01733 debian/php52/var/lib/php52
+	mkdir -p debian/php52/$(EXTENSION_DIR)
+	
+	# install apache2 DSO module
+	mkdir -p debian/libapache2-mod-php52/`apxs2 -q LIBEXECDIR`
+	cp apache2-build/.libs/libphp5.so debian/libapache2-mod-php52/`apxs2 -q LIBEXECDIR`/libphp52.so
+	mkdir -p debian/libapache2-mod-php52/etc/apache2/mods-available
+	cp debian/apache2-php52.load debian/libapache2-mod-php52/etc/apache2/mods-available/php52.load
+	cp debian/apache2-php52.conf debian/libapache2-mod-php52/etc/apache2/mods-available/php52.conf
+	mkdir -p debian/libapache2-mod-php52/etc/php52/apache2
+	cp php.ini-recommended debian/libapache2-mod-php52/etc/php52/apache2/php.ini
+	sed -i "s#^extension_dir = \"./\"#extension_dir = \"$(EXTENSION_DIR)\"#" debian/libapache2-mod-php52/etc/php52/apache2/php.ini
+	
+	# install CGI
+	cd cgi-build && $(MAKE) install-sapi INSTALL_ROOT=$(CURDIR)/debian/php52
+	mkdir -p debian/php52/etc/php52/cgi
+	cp php.ini-recommended debian/php52/etc/php52/cgi/php.ini
+	sed -i "s#^extension_dir = \"./\"#extension_dir = \"$(EXTENSION_DIR)\"#" debian/php52/etc/php52/cgi/php.ini
+	
+	# install CLI
+	cd cli-build && $(MAKE) install-cli INSTALL_ROOT=$(CURDIR)/debian/php52
+	mkdir -p debian/php52/etc/php52/cli
+	cp php.ini-recommended debian/php52/etc/php52/cli/php.ini
+	sed -i 's#^display_errors = Off#display_errors = stderr#' debian/php52/etc/php52/cli/php.ini
+	sed -i "s#^extension_dir = \"./\"#extension_dir = \"$(EXTENSION_DIR)\"#" debian/php52/etc/php52/cli/php.ini
+	sed -i "s#^output_buffering = 4096#output_buffering = Off#" debian/php52/etc/php52/cli/php.ini
+	
+	# install FPM
+	mkdir -p debian/php52-fpm/usr/sbin
+	cp fpm-build/sapi/cgi/php-cgi debian/php52-fpm/usr/sbin/php-fpm52
+	mkdir -p debian/php52-fpm/etc/php52/fpm
+	cp php.ini-recommended debian/php52-fpm/etc/php52/fpm/php.ini
+	sed -i "s#^extension_dir = \"./\"#extension_dir = \"$(EXTENSION_DIR)\"#" debian/php52-fpm/etc/php52/fpm/php.ini
+	
+	# Install alternate paths
+	cd cli-build && $(MAKE) install-build install-headers install-programs INSTALL_ROOT=$(CURDIR)/debian/php52-dev
+	mv debian/php52-dev/usr/include/php debian/php52-dev/usr/include/php52
+	sed -i 's~/include/php~/include/php52~g' debian/php52-dev/usr/bin/php-config52
+	sed -i 's~/include`/php~/include`/php52~g' debian/php52-dev/usr/bin/phpize52
+	
+	# Install configuration
+	mkdir -p debian/php52/etc/php52/conf.d
+	
+	# Install PEAR
+	cp -r pear-build/* debian/php52-pear/
+	
+	touch install-stamp
+
+binary: binary-arch binary-indep
+
+binary-indep: DH_OPTIONS=-i
+binary-indep: build install
+	dh_testdir
+	dh_testroot
+	dh_installdocs
+	dh_link
+	dh_compress -X.ini
+	dh_fixperms
+	dh_installdeb
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_installcron
+	dh_installinit
+	dh_installchangelogs NEWS
+	dh_installdocs
+	dh_strip -s --dbg-package=php52-dbg
+	dh_link -s
+	dh_compress -s -X.ini
+	dh_fixperms -s -X /var/lib/php52
+	mkdir -p debian/php52/usr/share/linda/overrides
+	echo "Tag: non-standard-dir-perm" >> debian/php52/usr/share/linda/overrides/php52
+	echo "Data: /var/lib/php52.*" >> debian/php52/usr/share/linda/overrides/php52
+	dh_installdeb -s
+	dh_shlibdeps -s
+	dh_gencontrol -s
+	dh_md5sums -s
+	dh_builddeb -s
+
+clean: unprepared unpatch
+	dh_testdir
+	rm -f configure-apache2-stamp build-apache2-stamp
+	rm -f configure-cgi-stamp build-cgi-stamp
+	rm -f configure-cli-stamp build-cli-stamp
+	rm -f configure-fpm-stamp build-fpm-stamp
+	rm -f build-pear-stamp
+	rm -f install-stamp
+	rm -rf apache2-build
+	rm -rf cgi-build
+	rm -rf cli-build
+	rm -rf fpm-build
+	rm -rf pear-build
+	dh_clean
+
+.PHONY: build clean binary-indep binary-arch binary install configure

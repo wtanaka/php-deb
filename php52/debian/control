@@ -1,0 +1,119 @@
+Source: php52
+Section: php
+Priority: optional
+Maintainer: Sascha Kettler <kettler@gmx.net>
+Build-Depends: autoconf, autoconf2.13, autotools-dev, bison, libtool,
+ libbz2-dev, libcurl4-openssl-dev, libdb-dev, libedit-dev, libexpat1-dev,
+ libfreetype6-dev, libgcrypt11-dev, libgd2-xpm-dev, libgmp3-dev,
+ libjpeg-dev, libmhash-dev, libmysqlclient-dev, libncurses5-dev,
+ libpng12-dev, libpspell-dev, librecode-dev, libsqlite0-dev, libssl-dev,
+ libt1-dev, libtidy-dev, libxml2-dev, libxmltok1-dev, libxslt1-dev,
+ zlib1g-dev, libmcrypt-dev, libldap2-dev, libreadline5-dev | libreadline6-dev,
+ shtool, chrpath, flex, apache2-prefork-dev, debhelper (>= 5),
+ hardening-wrapper, quilt
+Build-Conflicts: bind-dev
+Standards-Version: 3.9.3
+Homepage: http://www.php.net/
+
+Package: php52
+Architecture: i386 amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}, mime-support, libmagic1, ucf,
+ php52-common
+Provides: php5, php5-cli, php5-cgi, php5-common, php5-mysql, php5-mysqli,
+ php5-mcrypt, php5-gd, php5-curl, php5-mysqlnd, php5-gmp, php5-ldap,
+ php5-pspell, php5-sqlite, php5-tidy, php5-xmlrpc, php5-xsl
+Description: server-side, HTML-embedded scripting language
+ PHP5 is an HTML-embedded scripting language. Much of its syntax is borrowed
+ from C, Java and Perl with a couple of unique PHP-specific features thrown
+ in. The goal of the language is to allow web developers to write dynamically
+ generated pages quickly.
+ .
+ Homepage: http://www.php.net/
+
+Package: php52-dbg
+Architecture: i386 amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}, mime-support, libmagic1, ucf,
+ php52 (= ${binary:Version})
+Recommends: gdb
+Description: Debug symbols for PHP5
+ This package provides the debug symbols for PHP5 needed for properly
+ debugging errors in PHP5 with gdb.
+ .
+ PHP5 is an HTML-embedded scripting language. Much of its syntax is borrowed
+ from C, Java and Perl with a couple of unique PHP-specific features thrown
+ in. The goal of the language is to allow web developers to write dynamically
+ generated pages quickly.
+ .
+ Homepage: http://www.php.net/
+
+Package: libapache2-mod-php52
+Architecture: i386 amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}, php52, apache2-mpm-prefork, 
+ apache2.2-common 
+Conflicts: libapache2-mod-php53, libapache2-mod-php54
+Replaces: libapache2-mod-php5
+Provides: libapache2-mod-php5
+Description: server-side, HTML-embedded scripting language (Apache 2 module)
+ This package provides the PHP5 module for the Apache 2 webserver (as
+ found in the apache2-mpm-prefork package).  Please note that this package
+ ONLY works with Apache's prefork MPM, as it is not compiled thread-safe.
+ .
+ PHP5 is an HTML-embedded scripting language. Much of its syntax is borrowed
+ from C, Java and Perl with a couple of unique PHP-specific features thrown
+ in. The goal of the language is to allow web developers to write dynamically
+ generated pages quickly.
+ .
+ Homepage: http://www.php.net/
+
+Package: php52-fpm
+Architecture: i386 amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}, php52
+Description: server-side, HTML-embedded scripting language (FastCGI Manager)
+ FastCGI is a high-speed and scalable interface for communicating with the
+ web server scripting language. More information about FastCGI can be found
+ on the official website or on Wikipedia.
+ .
+ PHP-FPM works on with any web server that supports FastCGI.
+ .
+ PHP5 is an HTML-embedded scripting language. Much of its syntax is borrowed
+ from C, Java and Perl with a couple of unique PHP-specific features thrown
+ in. The goal of the language is to allow web developers to write dynamically
+ generated pages quickly.
+ .
+ Homepage: http://www.php.net/
+
+Package: php52-dev
+Architecture: i386 amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}, php52, autoconf, autoconf2.13, 
+ automake, libssl-dev, libtool, shtool,  m4, build-essential, libpcre3-dev
+Provides: php5-dev
+Description: Files for PHP5 module development
+ This package provides the files from the PHP5 source needed for compiling
+ additional modules.
+ .
+ PHP5 is an HTML-embedded scripting language. Much of its syntax is borrowed
+ from C, Java and Perl with a couple of unique PHP-specific features thrown
+ in. The goal of the language is to allow web developers to write dynamically
+ generated pages quickly.
+ .
+ Homepage: http://www.php.net/
+
+Package: php52-pear
+Architecture: all
+Depends: ${misc:Depends}, php52
+Conflicts: php53-pear
+Replaces: php-pear
+Provides: php-pear
+Description: PEAR - PHP Extension and Application Repository
+ This package contains the base PEAR classes for PHP, as well as the PEAR
+ installer.  Many PEAR classes are already packaged for Debian, and can be
+ easily identified by names beginning with "php-", such as php-db and
+ php-auth.  Note: to build and install precompiled PECL extensions, you
+ will need one of the php development packages installed.
+ .
+ PHP5 is an HTML-embedded scripting language. Much of its syntax is borrowed
+ from C, Java and Perl with a couple of unique PHP-specific features thrown
+ in. The goal of the language is to allow web developers to write dynamically
+ generated pages quickly.
+ .
+ Homepage: http://www.php.net/

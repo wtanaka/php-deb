@@ -1,0 +1,48 @@
+diff -ur php52-5.2.14/ext/session/session.c php52-5.2.14-defaults/ext/session/session.c
+--- php52-5.2.14/ext/session/session.c	2010-04-26 20:35:54.000000000 +0200
++++ php52-5.2.14-defaults/ext/session/session.c	2010-10-29 11:41:34.056122618 +0200
+@@ -683,7 +683,7 @@
+ PHP_INI_BEGIN()
+ 	STD_PHP_INI_BOOLEAN("session.bug_compat_42",    "1",         PHP_INI_ALL, OnUpdateBool,   bug_compat,         php_ps_globals,    ps_globals)
+ 	STD_PHP_INI_BOOLEAN("session.bug_compat_warn",  "1",         PHP_INI_ALL, OnUpdateBool,   bug_compat_warn,    php_ps_globals,    ps_globals)
+-	STD_PHP_INI_ENTRY("session.save_path",          "",          PHP_INI_ALL, OnUpdateSaveDir,save_path,          php_ps_globals,    ps_globals)
++	STD_PHP_INI_ENTRY("session.save_path",          "/var/lib/php52", PHP_INI_ALL, OnUpdateSaveDir,save_path,          php_ps_globals,    ps_globals)
+ 	STD_PHP_INI_ENTRY("session.name",               "PHPSESSID", PHP_INI_ALL, OnUpdateString, session_name,       php_ps_globals,    ps_globals)
+ 	PHP_INI_ENTRY("session.save_handler",           "files",     PHP_INI_ALL, OnUpdateSaveHandler)
+ 	STD_PHP_INI_BOOLEAN("session.auto_start",       "0",         PHP_INI_ALL, OnUpdateBool,   auto_start,         php_ps_globals,    ps_globals)
+diff -ur php52-5.2.14/main/main.c php52-5.2.14-defaults/main/main.c
+--- php52-5.2.14/main/main.c	2010-10-28 17:01:36.476112125 +0200
++++ php52-5.2.14-defaults/main/main.c	2010-10-29 11:42:35.226124673 +0200
+@@ -453,7 +453,7 @@
+ 	PHP_INI_ENTRY("mail.force_extra_parameters",NULL,		PHP_INI_SYSTEM|PHP_INI_PERDIR,		OnChangeMailForceExtra)
+ 	PHP_INI_ENTRY("disable_functions",			"",			PHP_INI_SYSTEM,		NULL)
+ 	PHP_INI_ENTRY("disable_classes",			"",			PHP_INI_SYSTEM,		NULL)
+-	PHP_INI_ENTRY("max_file_uploads",			"20",			PHP_INI_SYSTEM,		NULL)
++	PHP_INI_ENTRY("max_file_uploads",			"50",			PHP_INI_SYSTEM,		NULL)
+ 
+ 	STD_PHP_INI_BOOLEAN("allow_url_fopen",		"1",		PHP_INI_SYSTEM,		OnUpdateBool,		allow_url_fopen,		php_core_globals,	core_globals)
+ 	STD_PHP_INI_BOOLEAN("allow_url_include",	"0",		PHP_INI_SYSTEM,		OnUpdateBool,		allow_url_include,		php_core_globals,	core_globals)
+diff -ur php52-5.2.14/php.ini-dist php52-5.2.14-defaults/php.ini-dist
+--- php52-5.2.14/php.ini-dist	2009-11-05 14:29:34.000000000 +0100
++++ php52-5.2.14-defaults/php.ini-dist	2010-10-29 11:42:50.986125136 +0200
+@@ -553,7 +553,7 @@
+ 
+ 
+ ; Maximum number of files that can be uploaded via a single request
+-max_file_uploads = 20
++max_file_uploads = 50
+ 
+ ;;;;;;;;;;;;;;;;;;
+ ; Fopen wrappers ;
+diff -ur php52-5.2.14/php.ini-recommended php52-5.2.14-defaults/php.ini-recommended
+--- php52-5.2.14/php.ini-recommended	2009-11-05 14:29:34.000000000 +0100
++++ php52-5.2.14-defaults/php.ini-recommended	2010-10-29 11:42:57.966122512 +0200
+@@ -604,7 +604,7 @@
+ 
+ 
+ ; Maximum number of files that can be uploaded via a single request
+-max_file_uploads = 20
++max_file_uploads = 50
+ 
+ ;;;;;;;;;;;;;;;;;;
+ ; Fopen wrappers ;

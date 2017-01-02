@@ -1,0 +1,146 @@
+diff -urN php52-5.2.17/ext/dba/config.m4 php52-5.2.17-multiarch/ext/dba/config.m4
+--- php52-5.2.17/ext/dba/config.m4	2010-03-05 06:23:01.000000000 +0100
++++ php52-5.2.17-multiarch/ext/dba/config.m4	2013-01-09 11:56:46.135826822 +0100
+@@ -200,7 +200,9 @@
+     AC_MSG_ERROR([DBA: Could not find necessary header file(s).])
+   fi
+   for LIB in $2; do
+-    if test -f $THIS_PREFIX/$PHP_LIBDIR/lib$LIB.a || test -f $THIS_PREFIX/$PHP_LIBDIR/lib$LIB.$SHLIB_SUFFIX_NAME; then
++    if test -f $THIS_PREFIX/$PHP_LIBDIR/lib$LIB.a || test -f $THIS_PREFIX/$PHP_LIBDIR/lib$LIB.$SHLIB_SUFFIX_NAME || \
++       test -f $THIS_PREFIX/$PHP_LIBDIR/$DEB_HOST_MULTIARCH/lib$LIB.a || \
++       test -f $THIS_PREFIX/$PHP_LIBDIR/$DEB_HOST_MULTIARCH/lib$LIB.$SHLIB_SUFFIX_NAME; then
+       lib_found="";
+       PHP_TEMP_LDFLAGS(-L$THIS_PREFIX/$PHP_LIBDIR, -l$LIB,[
+         AC_TRY_LINK([
+diff -urN php52-5.2.17/ext/gd/config.m4 php52-5.2.17-multiarch/ext/gd/config.m4
+--- php52-5.2.17/ext/gd/config.m4	2007-07-03 19:25:43.000000000 +0200
++++ php52-5.2.17-multiarch/ext/gd/config.m4	2013-01-08 17:31:16.917566939 +0100
+@@ -75,7 +75,9 @@
+   if test "$PHP_JPEG_DIR" != "no"; then
+ 
+     for i in $PHP_JPEG_DIR /usr/local /usr; do
+-      test -f $i/$PHP_LIBDIR/libjpeg.$SHLIB_SUFFIX_NAME || test -f $i/$PHP_LIBDIR/libjpeg.a && GD_JPEG_DIR=$i && break
++      test -f $i/$PHP_LIBDIR/libjpeg.$SHLIB_SUFFIX_NAME || test -f $i/$PHP_LIBDIR/libjpeg.a || \
++        test -f $i/$PHP_LIBDIR/$DEB_HOST_MULTIARCH/libjpeg.$SHLIB_SUFFIX_NAME || \
++        test -f $i/$PHP_LIBDIR/$DEB_HOST_MULTIARCH/libjpeg.a && GD_JPEG_DIR=$i && break
+     done
+ 
+     if test -z "$GD_JPEG_DIR"; then
+@@ -100,7 +102,9 @@
+   if test "$PHP_PNG_DIR" != "no"; then
+ 
+     for i in $PHP_PNG_DIR /usr/local /usr; do
+-      test -f $i/$PHP_LIBDIR/libpng.$SHLIB_SUFFIX_NAME || test -f $i/$PHP_LIBDIR/libpng.a && GD_PNG_DIR=$i && break
++      test -f $i/$PHP_LIBDIR/libpng.$SHLIB_SUFFIX_NAME || test -f $i/$PHP_LIBDIR/libpng.a || \
++        test -f $i/$PHP_LIBDIR/$DEB_HOST_MULTIARCH/libpng.$SHLIB_SUFFIX_NAME || \
++        test -f $i/$PHP_LIBDIR/$DEB_HOST_MULTIARCH/libpng.a && GD_PNG_DIR=$i && break
+     done
+ 
+     if test -z "$GD_PNG_DIR"; then
+@@ -135,7 +139,9 @@
+   if test "$PHP_XPM_DIR" != "no"; then
+ 
+     for i in $PHP_XPM_DIR /usr/local /usr/X11R6 /usr; do
+-      test -f $i/$PHP_LIBDIR/libXpm.$SHLIB_SUFFIX_NAME || test -f $i/$PHP_LIBDIR/libXpm.a && GD_XPM_DIR=$i && break
++      test -f $i/$PHP_LIBDIR/libXpm.$SHLIB_SUFFIX_NAME || test -f $i/$PHP_LIBDIR/libXpm.a || \
++        test -f $i/$PHP_LIBDIR/$DEB_HOST_MULTIARCH/libXpm.$SHLIB_SUFFIX_NAME || \
++        test -f $i/$PHP_LIBDIR/$DEB_HOST_MULTIARCH/libXpm.a && GD_XPM_DIR=$i && break
+     done
+ 
+     if test -z "$GD_XPM_DIR"; then
+@@ -401,8 +407,8 @@
+   done
+ 
+ dnl Library path
+-  for i in $PHP_LIBDIR/gd1.3 $PHP_LIBDIR/gd $PHP_LIBDIR gd1.3 gd ""; do
+-    test -f "$PHP_GD/$i/libgd.$SHLIB_SUFFIX_NAME" || test -f "$PHP_GD/$i/libgd.a" && GD_LIB="$PHP_GD/$i"
++  for i in $PHP_LIBDIR/gd1.3 $PHP_LIBDIR/gd $PHP_LIBDIR $PHP_LIBDIR/$DEB_HOST_MULTIARCH gd1.3 gd ""; do
++    test -f $PHP_GD/$i/libgd.$SHLIB_SUFFIX_NAME || test -f $PHP_GD/$i/libgd.a && GD_LIB="$PHP_GD/$i"
+   done
+ 
+   if test -n "$GD_INCLUDE" && test -n "$GD_LIB"; then
+diff -urN php52-5.2.17/ext/ldap/config.m4 php52-5.2.17-multiarch/ext/ldap/config.m4
+--- php52-5.2.17/ext/ldap/config.m4	2007-08-08 13:37:44.000000000 +0200
++++ php52-5.2.17-multiarch/ext/ldap/config.m4	2013-01-09 10:06:32.751597704 +0100
+@@ -95,14 +95,17 @@
+     LDAP_PTHREAD=
+   fi
+ 
+-  if test -f $LDAP_LIBDIR/liblber.a || test -f $LDAP_LIBDIR/liblber.$SHLIB_SUFFIX_NAME; then
++  if test -f $LDAP_LIBDIR/liblber.a || test -f $LDAP_LIBDIR/liblber.$SHLIB_SUFFIX_NAME || \
++      test -f $LDAP_LIBDIR/$DEB_HOST_MULTIARCH/liblber.a || test -f $LDAP_LIBDIR/$DEB_HOST_MULTIARCH/liblber.$SHLIB_SUFFIX_NAME; then
+     PHP_ADD_LIBRARY_WITH_PATH(lber, $LDAP_LIBDIR, LDAP_SHARED_LIBADD)
+     PHP_ADD_LIBRARY_WITH_PATH(ldap, $LDAP_LIBDIR, LDAP_SHARED_LIBADD)
+ 
+-  elif test -f $LDAP_LIBDIR/libldap.$SHLIB_SUFFIX_NAME || test -f $LDAP_LIBDIR/libldap.$SHLIB_SUFFIX_NAME.3 || test -f $LDAP_LIBDIR/libldap.3.dylib; then
++  elif test -f $LDAP_LIBDIR/libldap.$SHLIB_SUFFIX_NAME || test -f $LDAP_LIBDIR/libldap.$SHLIB_SUFFIX_NAME.3 || test -f $LDAP_LIBDIR/libldap.3.dylib || \
++      test -f $LDAP_LIBDIR/$DEB_HOST_MULTIARCH/libldap.$SHLIB_SUFFIX_NAME || test -f $LDAP_LIBDIR/$DEB_HOST_MULTIARCH/libldap.$SHLIB_SUFFIX_NAME.3 || test -f $LDAP_LIBDIR/libldap.3.dylib; then
+     PHP_ADD_LIBRARY_WITH_PATH(ldap, $LDAP_LIBDIR, LDAP_SHARED_LIBADD)
+ 
+-  elif test -f $LDAP_LIBDIR/libssldap50.$SHLIB_SUFFIX_NAME; then
++  elif test -f $LDAP_LIBDIR/libssldap50.$SHLIB_SUFFIX_NAME || \
++      test -f $LDAP_LIBDIR/$DEB_HOST_MULTIARCH/libssldap50.$SHLIB_SUFFIX_NAME; then
+     if test -n "$LDAP_PTHREAD"; then 
+       PHP_ADD_LIBRARY($LDAP_PTHREAD)
+     fi
+@@ -115,7 +118,8 @@
+     PHP_ADD_LIBRARY_WITH_PATH(ssl3, $LDAP_LIBDIR, LDAP_SHARED_LIBADD)
+     AC_DEFINE(HAVE_NSLDAP,1,[ ])
+ 
+-  elif test -f $LDAP_LIBDIR/libldapssl41.$SHLIB_SUFFIX_NAME; then
++  elif test -f $LDAP_LIBDIR/libldapssl41.$SHLIB_SUFFIX_NAME || \
++      test -f $LDAP_LIBDIR/$DEB_HOST_MULTIARCH/libldapssl41.$SHLIB_SUFFIX_NAME; then
+     if test -n "$LDAP_PTHREAD"; then 
+       PHP_ADD_LIBRARY($LDAP_PTHREAD)
+     fi
+@@ -125,28 +129,33 @@
+     PHP_ADD_LIBRARY_WITH_PATH(ldapssl41, $LDAP_LIBDIR, LDAP_SHARED_LIBADD)
+     AC_DEFINE(HAVE_NSLDAP,1,[ ])
+ 
+-  elif test -f $LDAP_LIBDIR/libldapssl30.$SHLIB_SUFFIX_NAME; then
++  elif test -f $LDAP_LIBDIR/libldapssl30.$SHLIB_SUFFIX_NAME || \
++      test -f $LDAP_LIBDIR/$DEB_HOST_MULTIARCH/libldapssl30.$SHLIB_SUFFIX_NAME; then
+     if test -n "$LDAP_PTHREAD"; then 
+       PHP_ADD_LIBRARY($LDAP_PTHREAD)
+     fi
+     PHP_ADD_LIBRARY_WITH_PATH(ldapssl30, $LDAP_LIBDIR, LDAP_SHARED_LIBADD)
+     AC_DEFINE(HAVE_NSLDAP,1,[ ])
+ 
+-  elif test -f $LDAP_LIBDIR/libldap30.$SHLIB_SUFFIX_NAME; then
++  elif test -f $LDAP_LIBDIR/libldap30.$SHLIB_SUFFIX_NAME || \
++      test -f $LDAP_LIBDIR/$DEB_HOST_MULTIARCH/libldap30.$SHLIB_SUFFIX_NAME; then
+     if test -n "$LDAP_PTHREAD"; then 
+       PHP_ADD_LIBRARY($LDAP_PTHREAD)
+     fi
+     PHP_ADD_LIBRARY_WITH_PATH(ldap30, $LDAP_LIBDIR, LDAP_SHARED_LIBADD)
+     AC_DEFINE(HAVE_NSLDAP,1,[ ])
+ 
+-  elif test -f $LDAP_LIBDIR/libumich_ldap.$SHLIB_SUFFIX_NAME; then
++  elif test -f $LDAP_LIBDIR/libumich_ldap.$SHLIB_SUFFIX_NAME || \
++      test -f $LDAP_LIBDIR/$DEB_HOST_MULTIARCH/libumich_ldap.$SHLIB_SUFFIX_NAME; then
+     PHP_ADD_LIBRARY_WITH_PATH(umich_lber, $LDAP_LIBDIR, LDAP_SHARED_LIBADD)
+     PHP_ADD_LIBRARY_WITH_PATH(umich_ldap, $LDAP_LIBDIR, LDAP_SHARED_LIBADD)
+ 
+-  elif test -f $LDAP_LIBDIR/libclntsh.$SHLIB_SUFFIX_NAME; then
++  elif test -f $LDAP_LIBDIR/libclntsh.$SHLIB_SUFFIX_NAME || \
++      test -f $LDAP_LIBDIR/$DEB_HOST_MULTIARCH/libclntsh.$SHLIB_SUFFIX_NAME; then
+     PHP_ADD_LIBRARY_WITH_PATH(clntsh, $LDAP_LIBDIR, LDAP_SHARED_LIBADD)
+     AC_DEFINE(HAVE_ORALDAP,1,[ ])
+-    if test -f $LDAP_LIBDIR/libclntsh.$SHLIB_SUFFIX_NAME.10.1; then
++    if test -f $LDAP_LIBDIR/libclntsh.$SHLIB_SUFFIX_NAME.10.1 || \
++        test -f $LDAP_LIBDIR/$DEB_HOST_MULTIARCH/libclntsh.$SHLIB_SUFFIX_NAME.10.1; then
+       AC_DEFINE(HAVE_ORALDAP_10,1,[ ])
+     fi
+   else
+diff -urN php52-5.2.17/ext/mysql/config.m4 php52-5.2.17-multiarch/ext/mysql/config.m4
+--- php52-5.2.17/ext/mysql/config.m4	2006-06-01 21:14:48.000000000 +0200
++++ php52-5.2.17-multiarch/ext/mysql/config.m4	2013-01-09 10:14:37.775615113 +0100
+@@ -3,7 +3,7 @@
+ dnl
+ 
+ AC_DEFUN([MYSQL_LIB_CHK], [
+-  str="$MYSQL_DIR/$1/lib$MYSQL_LIBNAME.*"
++  str="$MYSQL_DIR/$1/lib$MYSQL_LIBNAME.* $MYSQL_DIR/$1/$DEB_HOST_MULTIARCH/lib$MYSQL_LIBNAME.*"
+   for j in `echo $str`; do
+     if test -r $j; then
+       MYSQL_LIB_DIR=$MYSQL_DIR/$1

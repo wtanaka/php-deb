@@ -1,0 +1,14 @@
+diff -urN php52-5.2.17/ext/gmp/gmp.c php52-5.2.17-multiarch/ext/gmp/gmp.c
+--- php52-5.2.17/ext/gmp/gmp.c	2010-01-03 10:23:27.000000000 +0100
++++ php52-5.2.17-multiarch/ext/gmp/gmp.c	2013-01-09 10:21:15.935628870 +0100
+@@ -1396,7 +1396,11 @@
+ 
+ 		GMPG(rand_initialized) = 1;
+ 	}
++#ifdef GMP_LIMB_BITS
++	mpz_urandomb(*gmpnum_result, GMPG(rand_state), GMP_ABS (limiter) * GMP_LIMB_BITS);
++#else
+ 	mpz_urandomb(*gmpnum_result, GMPG(rand_state), GMP_ABS (limiter) * __GMP_BITS_PER_MP_LIMB);
++#endif
+ 
+ 	ZEND_REGISTER_RESOURCE(return_value, gmpnum_result, le_gmp);

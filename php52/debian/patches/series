@@ -1,0 +1,13 @@
+010_defaults.patch
+020_no_configure_command.patch
+030_pear_paths.patch
+040_remove_recode_conflict.patch
+050_suhosin-patch-5.2.16-0.9.7.patch
+060_zipext_memset.patch
+070_mail_log.patch
+080_php-5.2.14-fpm-0.5.14.patch
+090_newer_openssl.patch
+100_multiarch_support.patch
+110_newer_gmp_bug50990.patch
+120_disable_SSLv2_bug54736.patch
+130_newer_db.patch

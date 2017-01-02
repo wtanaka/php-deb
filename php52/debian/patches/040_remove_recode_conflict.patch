@@ -1,0 +1,11 @@
+diff -ur php52-5.2.14/ext/recode/config9.m4 php52-5.2.14-recode/ext/recode/config9.m4
+--- php52-5.2.14/ext/recode/config9.m4	2004-11-09 17:11:13.000000000 +0100
++++ php52-5.2.14-recode/ext/recode/config9.m4	2010-10-28 13:57:37.776129240 +0200
+@@ -8,6 +8,6 @@
+   test "$PHP_MYSQL" != "no" && recode_conflict="$recode_conflict mysql"
+ 
+   if test -n "$recode_conflict"; then
+-    AC_MSG_ERROR([recode extension can not be configured together with:$recode_conflict])
++    AC_MSG_WARN([recode extension can not be configured together with:$recode_conflict])
+   fi
+ fi

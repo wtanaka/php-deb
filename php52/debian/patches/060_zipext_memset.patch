@@ -1,0 +1,12 @@
+diff -ur php52-5.2.14/ext/zip/lib/zip_dirent.c php52-5.2.14-zipext/ext/zip/lib/zip_dirent.c
+--- php52-5.2.14/ext/zip/lib/zip_dirent.c	2010-10-29 16:11:24.516114871 +0200
++++ php52-5.2.14-zipext/ext/zip/lib/zip_dirent.c	2010-11-02 15:49:01.776123872 +0100
+@@ -475,7 +475,7 @@
+ {
+     struct tm tm;
+ 
+-    memset(&tm, sizeof(tm), 0);
++    memset(&tm, 0, sizeof(tm));
+     
+     /* let mktime decide if DST is in effect */
+     tm.tm_isdst = -1;
