@@ -23,6 +23,11 @@ build: \
 	php52-fpm_$(VERSION)_$(ARCH).deb \
 	php52-pear_$(VERSION)_all.deb
 
+sign: sec build /usr/bin/dh_testdir
+	gpg --list-keys 19D8D32E || gpg --import sec
+	if [ -z "$$passphrase" ]; then echo empty passphrase; fi
+	yes $$passphrase | (cd $(UNPACKED_SOURCE); debsign -p"gpg --passphrase-fd 0")
+
 %.deb: $(PBUILDER_CACHE)/$(DIST)_result/%.deb
 	cp "$<" "$@"
 
@@ -41,7 +46,8 @@ $(PBUILDER_CACHE)/$(DIST)_result/php52-fpm_$(VERSION)_$(ARCH).deb \
 $(PBUILDER_CACHE)/$(DIST)_result/php52-pear_$(VERSION)_all.deb: \
 		$(PBUILDER_CACHE)/$(DIST)-base.tgz \
 		$(BUILD_AREA)/$(BASENAME).dsc \
-		$(BUILD_AREA)/$(BASENAME).tar.gz
+		$(BUILD_AREA)/$(BASENAME).tar.gz \
+		/usr/bin/dh_testdir
 	(cd $(BUILD_AREA); $(PBUILDER_DIST) $(DIST) build $(BASENAME).dsc \
 		| sed -e 's_^/bin/sh.*libtool.*--mode=compile.*-o__g' \
 		| grep -v "note: expected '.*' but argument is of type '.*")
@@ -56,7 +62,9 @@ clean:
 
 ######################################################################
 
-$(BASENAME).dsc $(BASENAME).tar.gz: $(DEBUILD) $(UNPACKED_SOURCE)/debian
+$(BASENAME).dsc $(BASENAME).tar.gz: $(DEBUILD) \
+		$(UNPACKED_SOURCE)/debian \
+		/usr/bin/dh_testdir
 	(cd $(UNPACKED_SOURCE); $(DEBUILD) -S -us -uc)
 
 $(BUILD_AREA):
