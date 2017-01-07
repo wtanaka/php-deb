@@ -28,6 +28,15 @@ sign: sec build /usr/bin/dh_testdir
 	if [ -z "$$passphrase" ]; then echo empty passphrase; fi
 	yes $$passphrase | (cd $(UNPACKED_SOURCE); debsign -p"gpg --passphrase-fd 0")
 
+upload:
+	dput ppa:wtanaka/ppa $(BASENAME)_source.changes
+
+clean:
+	find . -name "*~" -exec rm \{\} \;
+	rm -rf *.deb *.build *.changes *.dsc *.tar.gz
+	rm -rf $(BUILD_AREA)
+	[ -d .git ] && git gc --aggressive
+
 %.deb: $(PBUILDER_CACHE)/$(DIST)_result/%.deb
 	cp "$<" "$@"
 
@@ -51,14 +60,6 @@ $(PBUILDER_CACHE)/$(DIST)_result/php52-pear_$(VERSION)_all.deb: \
 	(cd $(BUILD_AREA); $(PBUILDER_DIST) $(DIST) build $(BASENAME).dsc \
 		| sed -e 's_^/bin/sh.*libtool.*--mode=compile.*-o__g' \
 		| grep -v "note: expected '.*' but argument is of type '.*")
-
-upload:
-	dput ppa:wtanaka/ppa $(BASENAME)_source.changes
-
-clean:
-	find . -name "*~" -exec rm \{\} \;
-	rm -rf $(BUILD_AREA)
-	[ -d .git ] && git gc --aggressive
 
 ######################################################################
 
