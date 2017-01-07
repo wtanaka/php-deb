@@ -11,6 +11,7 @@ DEBUILD=/usr/bin/debuild
 PBUILDER_CACHE=$(HOME)/pbuilder
 PBUILDER_DIST=/usr/bin/pbuilder-dist
 PBUILDERRC=$(HOME)/.pbuilderrc
+SIGNING_KEY=19D8D32E
 
 all: build
 
@@ -24,9 +25,12 @@ build: \
 	php52-pear_$(VERSION)_all.deb
 
 sign: sec build /usr/bin/dh_testdir
-	gpg --list-keys 19D8D32E || gpg --import sec
+	gpg --list-keys $(SIGNING_KEY) || gpg --import sec
 	if [ -z "$$passphrase" ]; then echo empty passphrase; fi
 	yes $$passphrase | (cd $(UNPACKED_SOURCE); debsign -p"gpg --passphrase-fd 0")
+
+sec:
+	gpg --armor --export-secret-keys $(SIGNING_KEY) > "$@"
 
 upload:
 	dput ppa:wtanaka/ppa $(BASENAME)_source.changes
