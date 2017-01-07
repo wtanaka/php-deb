@@ -23,6 +23,10 @@ build: \
 	php52-fpm_$(VERSION)_$(ARCH).deb \
 	php52-pear_$(VERSION)_all.deb
 
+sign: build /usr/bin/dh_testdir
+	if [ -z "$$passphrase" ]; then echo empty passphrase; fi
+	echo $$passphrase | (cd $(UNPACKED_SOURCE); debuild -S -sa)
+
 %.deb: $(PBUILDER_CACHE)/$(DIST)_result/%.deb
 	cp "$<" "$@"
 
@@ -41,7 +45,8 @@ $(PBUILDER_CACHE)/$(DIST)_result/php52-fpm_$(VERSION)_$(ARCH).deb \
 $(PBUILDER_CACHE)/$(DIST)_result/php52-pear_$(VERSION)_all.deb: \
 		$(PBUILDER_CACHE)/$(DIST)-base.tgz \
 		$(BUILD_AREA)/$(BASENAME).dsc \
-		$(BUILD_AREA)/$(BASENAME).tar.gz
+		$(BUILD_AREA)/$(BASENAME).tar.gz \
+		/usr/bin/dh_testdir
 	(cd $(BUILD_AREA); $(PBUILDER_DIST) $(DIST) build $(BASENAME).dsc \
 		| sed -e 's_^/bin/sh.*libtool.*--mode=compile.*-o__g' \
 		| grep -v "note: expected '.*' but argument is of type '.*")
@@ -56,7 +61,9 @@ clean:
 
 ######################################################################
 
-$(BASENAME).dsc $(BASENAME).tar.gz: $(DEBUILD) $(UNPACKED_SOURCE)/debian
+$(BASENAME).dsc $(BASENAME).tar.gz: $(DEBUILD) \
+		$(UNPACKED_SOURCE)/debian \
+		/usr/bin/dh_testdir
 	(cd $(UNPACKED_SOURCE); $(DEBUILD) -S -us -uc)
 
 $(BUILD_AREA):
