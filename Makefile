@@ -29,6 +29,9 @@ sign: sec build /usr/bin/dh_testdir
 	if [ -z "$$passphrase" ]; then echo empty passphrase; fi
 	yes $$passphrase | (cd $(UNPACKED_SOURCE); debsign -p"gpg --passphrase-fd 0")
 
+sec.enc: sec
+	travis encrypt-file "$<" --add
+
 sec:
 	gpg --armor --export-secret-keys $(SIGNING_KEY) > "$@"
 
