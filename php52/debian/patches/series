@@ -17,3 +17,4 @@ php52-libgd-overflow2.patch
 php52-xmlsignedness.patch
 php52-gmp.patch
 php52-freetype.patch
+php52-mod_proxy_fcgi-bug-54152.patch

@@ -1,3 +1,9 @@
+php52 (5.2.17~ppa4~trusty) trusty; urgency=medium
+
+  * mod_proxy_fcgi compatibility PHP #54152
+
+ -- wtanaka.com (Launchpad Signing Key) <wtanaka@yahoo.com>  Sat, 07 Jan 2017 18:31:20 -1000
+
 php52 (5.2.17~ppa3~trusty) trusty; urgency=medium
 
   * Patches for building on Trusty
