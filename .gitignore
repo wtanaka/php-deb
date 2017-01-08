@@ -1,4 +1,5 @@
 *~
 /.apt-get-update-timestamp
+.pc/
 /sec
 /.vagrant/
