@@ -2,7 +2,7 @@
 # apt-get source php52
 UNPACKED_SOURCE=php52
 DIST=trusty
-VERSION=5.2.17~ppa3~$(DIST)
+VERSION=5.2.17~ppa4~$(DIST)
 BASENAME=php52_$(VERSION)
 ARCH=amd64
 BUILD_AREA=build-area

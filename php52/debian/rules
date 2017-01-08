@@ -190,6 +190,7 @@ configure-fpm-stamp: prepared-stamp
 	CFLAGS="$(CFLAGS)" LDFLAGS="-lrt" PROG_SENDMAIL="$(PROG_SENDMAIL)" ../configure \
 		--sysconfdir=/etc/php52 \
 		--enable-fastcgi --enable-fpm \
+		--enable-path-info-check \
 		--with-fpm-conf=/etc/php52/php-fpm.conf \
 		--with-fpm-log=/var/log/php52/php-fpm.log \
 		--with-fpm-pid=/var/run/php-fpm52.pid \
